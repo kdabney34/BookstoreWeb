@@ -1,108 +1,123 @@
 ﻿using BookstoreWeb.DataAccess;
 using BookstoreWeb.DataAccess.Repository.IRepository;
 using BookstoreWeb.Models;
-using BookstoreWeb.DataAccess.Repository;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BookstoreWeb.Controllers;
-
+[Area("Admin")]
 public class CategoryController : Controller
 {
-    private readonly IUnitOfWork _unitofwork;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CategoryController(IUnitOfWork unitofwork)
+    public CategoryController(IUnitOfWork unitOfWork)
     {
-        _unitofwork = unitofwork ;
+        _unitOfWork= unitOfWork;
     }
 
     public IActionResult Index()
     {
-        IEnumerable<Category> objCategoryList = _unitofwork.Category.GetAll(); 
+        IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
         return View(objCategoryList);
     }
 
-    // GET from db
+    //GET
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST to db
+    //POST
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(Category obj)
     {
         if (obj.Name == obj.DisplayOrder.ToString())
         {
-            ModelState.AddModelError("name", "The DisplayOrder cannot exactly match the name");
+            ModelState.AddModelError("name", "The DisplayOrder cannot exactly match the Name.");
         }
         if (ModelState.IsValid)
         {
-            _unitofwork.Category.Add(obj);
-            _unitofwork.Save();
-            TempData["success"] = "Category created successfully!";
+            _unitOfWork.Category.Add(obj);
+            _unitOfWork.Save();
+            TempData["success"] = "Category created successfully";
             return RedirectToAction("Index");
         }
-        return View(obj);
+        return View(obj);   
     }
 
-
-    // GET from db
+    //GET
     public IActionResult Edit(int? id)
     {
-        if (id == 0 || id == null)
+        if(id==null || id == 0)
         {
             return NotFound();
         }
-        // var categoryFromDb = _db.Categories.Find(id); 
-        var categoryFromDb = _unitofwork.Category.GetFirstOrDefault(u => u.Id == id);
-        return View(categoryFromDb);
+        //var categoryFromDb = _db.Categories.Find(id);
+        var categoryFromDbFirst = _unitOfWork.Category.GetFirstOrDefault(u=>u.Id==id);
+        //var categoryFromDbSingle = _db.Categories.SingleOrDefault(u => u.Id == id);
+
+        if (categoryFromDbFirst == null)
+        {
+            return NotFound();
+        }
+
+        return View(categoryFromDbFirst);
     }
 
-    // POST to db
+    //POST
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(Category obj)
     {
         if (obj.Name == obj.DisplayOrder.ToString())
         {
-            ModelState.AddModelError("name", "The DisplayOrder cannot exactly match the name");
+            ModelState.AddModelError("name", "The DisplayOrder cannot exactly match the Name.");
         }
         if (ModelState.IsValid)
         {
-            _unitofwork.Category.Update(obj);
-            _unitofwork.Save();
-            TempData["success"] = "Category edited successfully!";
+            _unitOfWork.Category.Update(obj);
+            _unitOfWork.Save();
+            TempData["success"] = "Category updated successfully";
             return RedirectToAction("Index");
         }
         return View(obj);
     }
 
-    //\\ GET DELETE PAGE
     public IActionResult Delete(int? id)
     {
-        var obj = _unitofwork.Category.GetFirstOrDefault(u => u.Id == id);
-        if (obj == null)
+        if (id == null || id == 0)
         {
             return NotFound();
         }
-        return View(obj);
+        //var categoryFromDb = _db.Categories.Find(id);
+        var categoryFromDbFirst = _unitOfWork.Category.GetFirstOrDefault(u=>u.Id==id);
+        //var categoryFromDbSingle = _db.Categories.SingleOrDefault(u => u.Id == id);
+
+        if (categoryFromDbFirst == null)
+        {
+            return NotFound();
+        }
+
+        return View(categoryFromDbFirst);
     }
 
-    //\\ POST DELETED ROW 
-    [HttpPost]
+    //POST
+    [HttpPost,ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public IActionResult DeletePOST(int? id)
     {
-        var obj = _unitofwork.Category.GetFirstOrDefault(u => u.Id == id);
+        var obj = _unitOfWork.Category.GetFirstOrDefault(u => u.Id == id);
         if (obj == null)
         {
             return NotFound();
         }
-        _unitofwork.Category.Remove(obj);
-        _unitofwork.Save();
-        TempData["success"] = "Category deleted successfully!";
+
+        _unitOfWork.Category.Remove(obj);
+            _unitOfWork.Save();
+        TempData["success"] = "Category deleted successfully";
         return RedirectToAction("Index");
+        
     }
 }

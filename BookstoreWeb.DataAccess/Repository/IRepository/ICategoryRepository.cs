@@ -1,11 +1,11 @@
-﻿using BulkyBook.Models;
+﻿using BookstoreWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BulkyBook.DataAccess.Repository.IRepository
+namespace BookstoreWeb.DataAccess.Repository.IRepository
 {
     public interface ICategoryRepository : IRepository<Category>
     {

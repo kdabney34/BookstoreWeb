@@ -21,4 +21,8 @@
     <ProjectReference Include="..\BookstoreWeb.Models\BookstoreWeb.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>

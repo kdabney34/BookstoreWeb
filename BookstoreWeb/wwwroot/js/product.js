@@ -5,9 +5,9 @@ $(document).ready(function () {
 });
 
 function loadDataTable() {
-    dataTable = $('#tblProducts').DataTable({
+    dataTable = $('#tblData').DataTable({
         "ajax": {
-            "url": "/Admin/Product/GetAll"
+            "url":"/Admin/Product/GetAll"
         },
         "columns": [
             { "data": "title", "width": "15%" },
@@ -36,11 +36,11 @@ function loadDataTable() {
 function Delete(url) {
     Swal.fire({
         title: 'Are you sure?',
-        text: "This will delete the product permanently from MS SQL database!",
+        text: "You won't be able to revert this!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {

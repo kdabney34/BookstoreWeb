@@ -1,12 +1,13 @@
-﻿using BulkyBook.DataAccess.Repository.IRepository;
-using BulkyBook.Models;
+﻿using BookstoreWeb.DataAccess;
+using BookstoreWeb.DataAccess.Repository.IRepository;
+using BookstoreWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BulkyBook.DataAccess.Repository
+namespace BookstoreWeb.DataAccess.Repository
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {

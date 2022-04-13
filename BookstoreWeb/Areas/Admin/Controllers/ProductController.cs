@@ -1,160 +1,147 @@
 ﻿using BookstoreWeb.DataAccess;
 using BookstoreWeb.DataAccess.Repository.IRepository;
 using BookstoreWeb.Models;
-using BookstoreWeb.DataAccess.Repository;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using BookstoreWeb.Models.ViewModels;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace BookstoreWeb.Controllers;
-
+[Area("Admin")]
 public class ProductController : Controller
 {
-    private readonly IUnitOfWork _unitofwork;
-    private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IWebHostEnvironment _hostEnvironment;
 
-    public ProductController(IUnitOfWork unitofwork, IWebHostEnvironment _newwebhostenvironment)
+
+    public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment hostEnvironment)
     {
-        _unitofwork = unitofwork ;
-        _webHostEnvironment = _newwebhostenvironment ;
+        _unitOfWork = unitOfWork;
+        _hostEnvironment = hostEnvironment;
     }
 
     public IActionResult Index()
-    { 
+    {
         return View();
     }
 
-    // GET from db
-    [HttpGet]
+    //GET
     public IActionResult Upsert(int? id)
     {
         ProductVM productVM = new()
         {
-            product = new(), //this line is necessary else the Upsert view won't have access to product's properties despite calling ProductVM new() must say new() product for it to be usable and transferrable
-            CategoryList = _unitofwork.Category.GetAll().Select(i => new SelectListItem
+            Product = new(),
+            CategoryList = _unitOfWork.Category.GetAll().Select(i => new SelectListItem
             {
                 Text = i.Name,
                 Value = i.Id.ToString()
             }),
-            CoverTypeList = _unitofwork.CoverTypes.GetAll().Select(i => new SelectListItem
+            CoverTypeList = _unitOfWork.CoverType.GetAll().Select(i => new SelectListItem
             {
                 Text = i.Name,
                 Value = i.Id.ToString()
             }),
         };
-        if (id == 0 || id == null)
-        // omit but pay attention to below methods ::: ways to pass data              ***
-        { // omitted in favor of above much more tightly-bound data structure            ***
-            // ViewBag.CategoryList = CategoryList;
-            // ViewData["CoverTypeList"] = CoverTypeList;
+
+        if (id == null || id == 0)
+        {
+            //create product
+            //ViewBag.CategoryList = CategoryList;
+            //ViewData["CoverTypeList"] = CoverTypeList;
             return View(productVM);
         }
         else
-        { // update product
-            productVM.product = _unitofwork.Products.GetFirstOrDefault(u => u.Id == id);
+        {
+            productVM.Product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == id);
             return View(productVM);
+
+            //update product
         }
+
+
     }
 
-   // POST to db
-   [HttpPost]
-   [ValidateAntiForgeryToken]
+    //POST
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public IActionResult Upsert(ProductVM obj, IFormFile? file)
     {
 
         if (ModelState.IsValid)
-        { //{
-            string wwwRootPath = _webHostEnvironment.WebRootPath;
-            if  (file != null)
+        {
+            string wwwRootPath = _hostEnvironment.WebRootPath;
+            if (file != null)
             {
-                string filename = Guid.NewGuid().ToString();
+                string fileName = Guid.NewGuid().ToString();
                 var uploads = Path.Combine(wwwRootPath, @"images\products");
                 var extension = Path.GetExtension(file.FileName);
-                if (obj.product.ImageUrl != null) //only way this could be true is if the object's properties are already filled out before submitting post action
+
+                if (obj.Product.ImageUrl != null)
                 {
-                    var oldImagePath = Path.Combine(wwwRootPath, obj.product.ImageUrl.TrimStart('\\'));
- 
+                    var oldImagePath = Path.Combine(wwwRootPath, obj.Product.ImageUrl.TrimStart('\\'));
                     if (System.IO.File.Exists(oldImagePath))
                     {
                         System.IO.File.Delete(oldImagePath);
                     }
                 }
 
-                using (var filestreams = new FileStream(Path.Combine(uploads, filename + extension), FileMode.Create))
+                using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                 {
-                    file.CopyTo(filestreams);
+                    file.CopyTo(fileStreams);
                 }
-                obj.product.ImageUrl = @"\images\products\" + filename + extension ;
-            }
+                obj.Product.ImageUrl = @"\images\products\" + fileName + extension;
 
-            if (obj.product.Id == 0) { 
-                _unitofwork.Products.Add(obj.product);
             }
-            else {
-                _unitofwork.Products.Update(obj.product);
+            if (obj.Product.Id == 0)
+            {
+                _unitOfWork.Product.Add(obj.Product);
             }
-            _unitofwork.Save();
-            TempData["success"] = "Product Edited Successfully!";
+            else
+            {
+                _unitOfWork.Product.Update(obj.Product);
+            }
+            _unitOfWork.Save();
+            TempData["success"] = "Product created successfully";
             return RedirectToAction("Index");
         }
         return View(obj);
     }
 
 
-    ////\\ POST DELETED ROW 
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public IActionResult DeletePOST(int? id)
-    //{
-    //    var obj = _unitofwork.Category.GetFirstOrDefault(u => u.Id == id);
-    //    if (obj == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    _unitofwork.Category.Remove(obj);
-    //    _unitofwork.Save();
-    //    TempData["success"] = "Category deleted successfully!";
-    //    return RedirectToAction("Index");
-    //}
-
 
     #region API CALLS
-
-
     [HttpGet]
     public IActionResult GetAll()
     {
-        var productlist = _unitofwork.Products.GetAll(includeProperties:"Category,CoverType");
-        return Json(new { data = productlist });
-        // API Endpoint
+        var productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CoverType");
+        return Json(new { data = productList });
     }
 
-
-    //\\ POST DELETED ROW 
     //POST
     [HttpDelete]
     public IActionResult Delete(int? id)
     {
-        var obj = _unitofwork.Products.GetFirstOrDefault(u => u.Id == id);
+        var obj = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == id);
         if (obj == null)
         {
             return Json(new { success = false, message = "Error while deleting" });
         }
 
-        var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, obj.ImageUrl.TrimStart('\\')).Replace(@"\\", @"\");
+        var oldImagePath = Path.Combine(_hostEnvironment.WebRootPath, obj.ImageUrl.TrimStart('\\'));
         if (System.IO.File.Exists(oldImagePath))
         {
             System.IO.File.Delete(oldImagePath);
         }
-        _unitofwork.Products.Remove(obj);
-        _unitofwork.Save();
+
+        _unitOfWork.Product.Remove(obj);
+        _unitOfWork.Save();
         return Json(new { success = true, message = "Delete Successful" });
-        
-        
-        #endregion
+
     }
-
+    #endregion
 }
-    
-
