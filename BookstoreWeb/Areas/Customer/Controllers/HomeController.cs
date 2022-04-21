@@ -48,7 +48,15 @@ public class HomeController : Controller
         var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
         shoppingCart.ApplicationUserID = claim.Value;
 
-        _unitOfWork.ShoppingCart.Add(shoppingCart);
+        ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.GetFirstOrDefault(
+            u=>u.ApplicationUserID==claim.Value && u.ProductID==shoppingCart.ProductID);
+
+        if (cartFromDb==null)
+        {
+            _unitOfWork.ShoppingCart.Add(shoppingCart);
+        }
+        else { _unitOfWork.ShoppingCart.IncrementCount(cartFromDb, shoppingCart.Count); }
+       
         _unitOfWork.Save();
 
         return RedirectToAction(nameof(Index));

@@ -26,9 +26,12 @@ namespace BookstoreWeb.DataAccess.Repository
             dbSet.Add(entity);
         }
         //includeProp - "Category,CoverType"
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter=null, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+                if (filter != null) {
+                query = query.Where(filter); //this applies the u=> u.Id==id function
+            }
             if (includeProperties != null)
             {
                 foreach(var includeProp in includeProperties.Split(new char[] { ','}, StringSplitOptions.RemoveEmptyEntries))

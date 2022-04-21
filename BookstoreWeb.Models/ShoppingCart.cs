@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookstoreWeb.Models
-{
+namespace BookstoreWeb.Models;
+
     public class ShoppingCart
     {
         public int Id { get; set; } // [Key] is understood by EFC if this line is seen. automatically assigns it as the tables primary key
@@ -22,5 +22,7 @@ namespace BookstoreWeb.Models
         [ForeignKey("ApplicationUserID")]
         [ValidateNever]
         public ApplicationUser ApplicationUser { get; set; }
+        [NotMapped]
+        public double Price { get; set; }
     }
-}
+
