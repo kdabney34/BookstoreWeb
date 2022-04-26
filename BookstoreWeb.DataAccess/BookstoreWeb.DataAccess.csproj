@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookstoreWeb.Models\BookstoreWeb.Models.csproj" />
+    <ProjectReference Include="..\BookstoreWeb.Utility\BookstoreWeb.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

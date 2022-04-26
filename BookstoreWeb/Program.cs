@@ -55,7 +55,6 @@ app.UseRouting();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();//assign global ApiKey inside pipeline
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllerRoute(

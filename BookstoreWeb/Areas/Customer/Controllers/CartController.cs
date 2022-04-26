@@ -79,14 +79,14 @@ namespace BookstoreWeb.Areas.Customer.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SummaryPOST()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claimsIdentity = (ClaimsIdentity)User.Identity; //get user id
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             ShoppingCartVM.ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserID == claim.Value,
-                includeProperties: "Product");
+                includeProperties: "Product"); //get all shopping carts enumerated into one shoppingCartVM
 
 
-            ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
+            ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now; //set orderDate & userId
             ShoppingCartVM.OrderHeader.ApplicationUserId = claim.Value;
 
 
@@ -94,14 +94,14 @@ namespace BookstoreWeb.Areas.Customer.Controllers
             {
                 cart.Price = GetPriceBasedOnQuantity(cart.Count, cart.Product.Price,
                     cart.Product.Price50, cart.Product.Price100);
-                ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+                ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);  //set cart prices based on quantity
             }
-            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value); //get other user information from AppUser model in db
 
-            if (applicationUser.CompanyID.GetValueOrDefault() == 0)
+            if (applicationUser.CompanyID.GetValueOrDefault() == 0)// this accounts for null case since int always eval to 0 if null in  //IF NOT COMPANY USER
             {
-                ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
-                ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+                ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending; //
+                ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;//temporarily set pending, after stripe payment confirmed set OrderStatus=Approved
             }
             else
             {
@@ -109,7 +109,7 @@ namespace BookstoreWeb.Areas.Customer.Controllers
                 ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
             }
 
-            _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
+            _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);//send orderHeader to db where it will be modified after stripe checkout
             _unitOfWork.Save();
             foreach (var cart in ShoppingCartVM.ListCart)
             {
@@ -120,28 +120,28 @@ namespace BookstoreWeb.Areas.Customer.Controllers
                     Price = cart.Price,
                     Count = cart.Count
                 };
-                _unitOfWork.OrderDetail.Add(orderDetail);
+                _unitOfWork.OrderDetail.Add(orderDetail);//so inside OrderDetails some are linked to OrderIds where PaymentStatus=Approved and some are Pending. 
                 _unitOfWork.Save();
             }
 
 
-            if (applicationUser.CompanyID.GetValueOrDefault() == 0)
+            if (applicationUser.CompanyID.GetValueOrDefault() == 0)//IF NOT COMPANY
             {
                 //stripe settings 
                 var domain = "https://localhost:44300/";
-                var options = new SessionCreateOptions
+                var options = new SessionCreateOptions       //CREATE stripe options that will be used for stripe checkout
                 {
                     PaymentMethodTypes = new List<string>
                 {
                   "card",
                 },
-                    LineItems = new List<SessionLineItemOptions>(),
+                    LineItems = new List<SessionLineItemOptions>(), //each OrderDetail row is a line item in stripe checkout
                     Mode = "payment",
-                    SuccessUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
-                    CancelUrl = domain + $"customer/cart/index",
+                    SuccessUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}", //redirection urls
+                    CancelUrl = domain + $"customer/cart/index", //cancelled order redirection url
                 };
 
-                foreach (var item in ShoppingCartVM.ListCart)
+                foreach (var item in ShoppingCartVM.ListCart) //create line item options (price, currency..)
                 {
 
                     var sessionLineItem = new SessionLineItemOptions
@@ -159,27 +159,29 @@ namespace BookstoreWeb.Areas.Customer.Controllers
                         Quantity = item.Count,
                     };
                     options.LineItems.Add(sessionLineItem);
-
+                                                //finish configuring stipe checkout options
                 }
 
-                var service = new SessionService();
-                Session session = service.Create(options);
+                var service = new SessionService();  
+                Session session = service.Create(options);//create instance of stripe checkout service using our options made above
+                                                          //STRIPE CHECKOUT (see cancelled / successful redirection URLs above. they are completed at this point!!!)
+                                                          //STRIPE CHECKOUT 
+                                                                        //  (now that checkout was purchased successfully, update stripe payment information and ID)
                 _unitOfWork.OrderHeader.UpdateStripePaymentId(ShoppingCartVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
                 _unitOfWork.Save();
                 Response.Headers.Add("Location", session.Url);
                 return new StatusCodeResult(303);
-            }
+            } //end (IF NOT COMPANY)
 
-            else
+            else //IF COMPANY
             {
-                return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });
+                return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });//pass userId
             }
         }
-
         public IActionResult OrderConfirmation(int id)
         {
             OrderHeader orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
-            if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
+            if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment )
             {
                 var service = new SessionService();
                 Session session = service.Get(orderHeader.SessionId);

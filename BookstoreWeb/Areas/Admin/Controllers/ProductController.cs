@@ -2,6 +2,8 @@
 using BookstoreWeb.DataAccess.Repository.IRepository;
 using BookstoreWeb.Models;
 using BookstoreWeb.Models.ViewModels;
+using BookstoreWeb.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,8 @@ using System.Linq;
 
 namespace BookstoreWeb.Controllers;
 [Area("Admin")]
+[Authorize(Roles = SD.Role_Admin)]//all crud operations can only be done by admin or employee
+
 public class ProductController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;

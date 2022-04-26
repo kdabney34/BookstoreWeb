@@ -1,12 +1,15 @@
 ﻿using BookstoreWeb.DataAccess;
 using BookstoreWeb.DataAccess.Repository.IRepository;
 using BookstoreWeb.Models;
+using BookstoreWeb.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace BookstoreWeb.Controllers;
 [Area("Admin")]
+[Authorize(Roles=SD.Role_Admin)]//all crud operations can only be done by admin or employee
 public class CategoryController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
