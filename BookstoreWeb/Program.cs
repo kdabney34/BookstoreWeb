@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using BookstoreWeb.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Stripe;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,11 +28,23 @@ builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Str
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+builder.Services.AddAuthentication().AddFacebook(options =>
+{
+    options.AppId = "706433234423587";
+    options.AppSecret = "9cab8125d130e5cefdf29fea881fd989";
+});
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = $"/Identity/Account/Login"; //these are the 3 default paths. they default to $"/Account/Login" for all. they must be overriden if you have an Identity Area as we do in this project
     options.LogoutPath = $"/Identity/Account/Logout";
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+});
+builder.Services.AddDistributedMemoryCache();//adds ASPNET session functionality
+builder.Services.AddSession(options => //add session
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(100);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 var app = builder.Build();
 
@@ -56,6 +69,7 @@ StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey"
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",

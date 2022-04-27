@@ -1,4 +1,6 @@
 ﻿@using BookstoreWeb.Utility
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,11 +47,13 @@
                                 Manage Order
                             </a>
                         </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Customer" asp-controller="Cart" asp-action="Index">
-                                <i class="bi bi-cart3"></i>
+                                @await Component.InvokeAsync("ShoppingCart")
                             </a>
                         </li>
+                        
                     </ul>
                     <partial name="_LoginPartial" />
                     @* <form class="d-flex">
@@ -70,7 +74,7 @@
 
     <footer class="footer text-muted bg-primary">
         <div class="container">
-            &copy; 2021 - BulkyBookWeb
+            &copy; 2022 - BookstoreWeb
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

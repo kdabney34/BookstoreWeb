@@ -1,11 +1,14 @@
 ﻿using BookstoreWeb.DataAccess.Repository.IRepository;
 using BookstoreWeb.Models;
 using BookstoreWeb.Models.ViewModels;
+using BookstoreWeb.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Claims;
 
 namespace BookstoreWeb.Controllers;
@@ -54,11 +57,13 @@ public class HomeController : Controller
         if (cartFromDb==null)
         {
             _unitOfWork.ShoppingCart.Add(shoppingCart);
+            _unitOfWork.Save(); //must use Save() to input to db before retrieving it as session integer in order for it to count
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserID == claim.Value).ToList().Count);
+        }                                                                   //retrieve all shopping carts(Order Details in db) and count them and store as int for session var
+        else { _unitOfWork.ShoppingCart.IncrementCount(cartFromDb, shoppingCart.Count);
+            _unitOfWork.Save();
         }
-        else { _unitOfWork.ShoppingCart.IncrementCount(cartFromDb, shoppingCart.Count); }
        
-        _unitOfWork.Save();
-
         return RedirectToAction(nameof(Index));
     }
 
