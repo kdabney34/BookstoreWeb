@@ -23,7 +23,7 @@ namespace BookstoreWeb.Utility
             using(var emailClient = new SmtpClient()) //S.M.T.P. = simple mail transfer protocol
             {
                 emailClient.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);//must indicate a security protocol or else can't connect to an smtp server
-                emailClient.Authenticate("kaledbny@gmail.com", "BookstoreWebTest123!");
+                emailClient.Authenticate("kaledbny@gmail.com", "BookstoreWeb123");
                 emailClient.Send(emailToSend);
                 emailClient.Disconnect(true);
             }

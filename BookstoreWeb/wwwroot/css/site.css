@@ -48,10 +48,83 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+body2 {
+    background-image: url("images/BACKGROUND.jpg");
+    background-color: #cccccc;
+}
 .footer {
   position: absolute;
   bottom: 0;
   width: 100%;
   white-space: nowrap;
   line-height: 60px;
+}
+
+/* about section */
+
+.about {
+    background-image: url("../images/BACKGROUND.jpg");
+    /*background: url("images/BACKGROUND.jpg");*/
+margin-top: 90px;
+background-size:cover;
+}
+
+ .about .about_img figure {
+  margin: 0;
+}
+
+.about .about_img figure img {
+   width: 100%;
+}
+
+.about_box {
+    width: 100%;
+    float: none;
+    max-width: 557px;
+    text-align: center;
+}
+
+.about p {
+    color: #0c0f38;
+    font-size: 17px;
+    line-height: 28px;
+    padding: 35px 0;
+}
+.about .container-43 {
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.about a {
+    font-size: 16px;
+    background-color: #000;
+    color: #fff;
+    padding: 10px 0px;
+    width: 100%;
+    max-width: 190px;
+    text-align: center;
+    display: inline-block;
+    font-weight: 400;
+    margin-top: 10px;
+}
+
+    .about a:hover {
+        background-color: #f57615;
+        color: #fff;
+    }
+
+.about .titlepage {
+    padding-bottom: 0;
+    text-align: center;
+}
+
+.yellow {
+    color: #f99b1d;
+}
+/** end about section **/
+
+.container-43 {
+    margin-top:1px;
+    margin-bottom:1px;
 }

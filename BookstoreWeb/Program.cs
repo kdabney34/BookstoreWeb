@@ -12,6 +12,7 @@ using BookstoreWeb.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Stripe;
 using System;
+using BookstoreWeb.DataAccess.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,9 +27,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProvid
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));//this automatically populates <StripeSettings> model with its respective values found in the "Stripe" section of appsettings.json. EFC loooks for identical naming schema in <StripeSettings> and the "Stripe" section; to bind those properties they must be named exactly.
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
-builder.Services.AddAuthentication().AddFacebook(options =>
+builder.Services.AddAuthentication().AddFacebook(options => //add facebook authentication, appId and Secret are found in facebook developer dashboard
 {
     options.AppId = "706433234423587";
     options.AppSecret = "9cab8125d130e5cefdf29fea881fd989";
@@ -66,7 +69,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();//assign global ApiKey inside pipeline
-
+SeedDatabase();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
@@ -76,3 +79,14 @@ app.MapControllerRoute(
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+void SeedDatabase ()
+{
+    using(var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();//seed database 
+    }
+
+}

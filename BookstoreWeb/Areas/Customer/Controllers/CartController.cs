@@ -15,7 +15,7 @@ namespace BookstoreWeb.Areas.Customer.Controllers
 {
     [Area("Customer")]
     [Authorize]
-    public class CartController : Controller
+    public class CartController : Controller 
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailSender _emailSender;
@@ -200,6 +200,7 @@ namespace BookstoreWeb.Areas.Customer.Controllers
                                 //you can pass order details here
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserID ==
             orderHeader.ApplicationUserId).ToList();
+            HttpContext.Session.Clear(); //else session # will stay the same
             _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
             _unitOfWork.Save();
             return View(id);
