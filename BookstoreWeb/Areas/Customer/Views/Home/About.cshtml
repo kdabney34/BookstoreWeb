@@ -1,4 +1,4 @@
-﻿
+﻿<link rel="stylesheet" href="~/css/colors.css"/>
 @{
     Layout = null;
 }
@@ -9,7 +9,29 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>About</title>
+
+    <!--------------------------------------------about view----------------------------------------------->
+
+<h1>hello my name is kale dabn</h1>
 </head>
 <body>
+<ul class="c-rainbow">
+ <li class="c-rainbow__layer c-rainbow__layer--white">RAINBOW</li>
+ <li class="c-rainbow__layer c-rainbow__layer--orange">RAINBOW</li>
+ <li class="c-rainbow__layer c-rainbow__layer--red">RAINBOW</li>
+ <li class="c-rainbow__layer c-rainbow__layer--violet">RAINBOW</li>
+ <li class="c-rainbow__layer c-rainbow__layer--blue">RAINBOW</li>
+ <li class="c-rainbow__layer c-rainbow__layer--green">RAINBOW</li>
+ <li class="c-rainbow__layer c-rainbow__layer--yellow">RAINBOW</li>
+</ul>
 </body>
+
+@section scripts{
+
+   <script type="text/javascript">
+    $(document).ready(function() {
+     new Sign().print(document.body)
+    })
+   </script>
+}
 </html>
