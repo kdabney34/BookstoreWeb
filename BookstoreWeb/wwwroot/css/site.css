@@ -102,27 +102,73 @@ background-size:cover;
     New Century Schoolbook, TeX Gyre Schola, serif
 }
 .container-43 {
+    margin-top: 1px;
+    margin-bottom: 1px;
     display: inline-block;
     line-height: 0.5;
-    background-color: aquamarine;
-    border: 12px solid #B22222;
-    border-radius: 10px;
+    background-color: #a86211;
+    border: 12px solid #653600;
+    border-radius: 6px;
     margin-top: 15px;
     margin-bottom: 15px;
 }
+.container-44{
+    font-family:'Poor Richard',sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    background:#25283;
 
-.about a {
-    font-size: 16px;
-    background-color: #000;
-    color: #fff;
-    padding: 10px 0px;
-    width: 100%;
-    max-width: 190px;
-    text-align: center;
-    display: inline-block;
-    font-weight: 400;
-    margin-top: 10px;
 }
+.container-44 p{
+    position:relative;
+    font-size:14vw;
+    color:#653600;
+    -webkit-text-stroke:0.3vw #3498db;
+    text-transform:uppercase;
+
+}
+    .container-44 p::before {
+        content: attr(data-text));
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        color: aquamarine;
+        -webkit-text-stroke: 0.3vw #3498db;
+        border-right:2px solid #00ff21;
+        overflow:hidden;
+        animation:animate 6s linear infinite;
+
+    }
+    @keyframes animate{
+        0%,10%,100%{
+            width:0;
+        }
+        70%,90% {
+            width: 100%;
+        }
+    }
+    .container-43 p {
+        color:black;
+    }
+    .about a {
+        font-size: 16px;
+        background-color: #000;
+        color: #fff;
+        padding: 10px 0px;
+        width: 100%;
+        max-width: 190px;
+        text-align: center;
+        display: inline-block;
+        font-weight: 400;
+        margin-top: 10px;
+    }
 
     .about a:hover {
         background-color: #f57615;
@@ -139,55 +185,14 @@ background-size:cover;
 }
 /** end about section **/
 
-.container-43 {
-    margin-top:1px;
-    margin-bottom:1px;
-}
-
-/*-------------------------------------------------------- carousel section ----------------------------------------------------------------------------*/
-
-
-
-/* bullshit */
-
-.wrapper {
-    width: 100%;
-    padding-top: 20px;
-    text-align: center;
-}
-
-h2 {
-    font-family: sans-serif;
-    color: #fff;
-}
-
-.carousel {
-    width: 90%;
-    margin: 0px auto;
-}
-
-.slick-slide {
-    margin: 10px;
-}
-
-    .slick-slide img {
-        width: 100%;
-        border: 2px solid #fff;
-    }
-
-.wrapper .slick-dots li button:before {
-    font-size: 20px;
-    color: white;
-}
-
-/*new stuff*/
+/*****************************************************begin quote container********************************************************8*/
 .body-ex{
     min-height:60vh;
     display:flex;
     align-items:center;
     justify-content:center;
     padding-bottom:70px;
-    background:#3498db;
+    background:#d67e21;
 }
 
 .qcontainer {
@@ -238,6 +243,7 @@ h2 {
     right: 15px;
     font-size: 90px;
     color: #3498db;
+    opacity:.84;
 }
 
 
@@ -300,5 +306,4 @@ h2 {
     background:#333;
     color:#fff;
 } 
-
-
+/*************************************end quote container*************************************************/

@@ -5,6 +5,7 @@ using BookstoreWeb.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,8 +28,15 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties:"Category,CoverType");
+        ViewBag.isHome = true;
 
         return View(productList);
+    }
+
+    public IActionResult About()
+    {
+
+        return View();
     }
 
     public IActionResult Details(int productId)
