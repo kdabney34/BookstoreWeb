@@ -236,7 +236,10 @@ background-size:cover;
         transform:scale(.5);
     }
 }
-
+.divx {
+    display: flex;
+    justify-content: space-between;
+}
 .qcontainer .slide-container .slide .icon {
     position: absolute;
     top: 10px;
