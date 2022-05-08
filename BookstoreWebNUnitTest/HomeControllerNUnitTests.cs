@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace BookstoreWebNUnitTest
@@ -16,12 +17,13 @@ namespace BookstoreWebNUnitTest
     [TestFixture]
     public class HomeControllerNUnitTests
     {
-        private HomeController homeController;
+        private ProductRepository ProductRepository;
         private IUnitOfWork _unitOfWork;
-        private Mock<ITestProductRepo> ProductRepository = new Mock<ITestProductRepo>();
+        private Mock<ITestProductRepo> productRepositoryMock = new Mock<ITestProductRepo>();
         private List<Product> productList;
         private DbContextOptions<ApplicationDbContext> options;
         private Mock<HomeController> homeControllerMock;
+        private HomeController homeController;
 
 
         public HomeControllerNUnitTests(IUnitOfWork unitOfWork)
@@ -46,6 +48,50 @@ namespace BookstoreWebNUnitTest
                .UseInMemoryDatabase(databaseName: "temp_MoviesDB").Options;
         }
 
+
+        public void HomeControllerModifySuccessful()
+        {
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()//using temporary DB instance because i don't want to modify existing company entities just for a test purpose
+                .UseInMemoryDatabase(databaseName: "temp-MoviesDB").Options;
+            string orig_Author;
+
+            using (var context = new ApplicationDbContext(options))//initialize using our newly configured options
+            {
+                var repository = new ProductRepository(context);
+                var stringRepresent = repository.GetAll().ToString;//retrieve specific category from Db
+                var product = repository.GetFirstOrDefault(u => u.Id == 1);
+                orig_Author = product.Author;
+                context.SaveChanges();//save to in-mem db
+
+            }
+
+            //new dbcontext instance to make sure our changes were saved successfully
+            using (var context = new ApplicationDbContext(options))
+            {
+                var repository = new ProductRepository(context);
+                var result = repository.GetFirstOrDefault(u => u.Id == 1);
+                if (result.Author == orig_Author)
+                {
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(result.Id, Is.GreaterThan(-1));//id==0 means new entry, so we allow for that since this may run on another machine without my local temp db config
+                        Assert.That(result.Price, Is.Positive);
+                        Assert.That(result.Price50, Is.TypeOf<double>());
+                        Assert.That(result.Price100, Is.AtLeast(20));
+                        Assert.That(result.Author, Is.TypeOf<string>());
+                        Assert.That(result.ImageUrl, Is.Not.Null);
+                        Assert.That(result.Category, Is.TypeOf<Category>());
+                        Assert.That(result.ISBN, Is.Unique);
+                    });
+                }
+                else
+                {
+                    Assert.Fail();
+                }
+            }
+
+        }
+
         //TEST THAT UNITOFWORK.PRODUCT.GETALL() IS INVOKED WITH ITS OPTIONS CORRECTLY
         //        IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties:"Category,CoverType");
         // => return View(productList)
@@ -63,6 +109,62 @@ namespace BookstoreWebNUnitTest
 
         }
 
+
+
+
+        [Test]
+        public void HomeControllerAccessesProductRepository_SQLServer_Table_Successfully_Accessed_And_Modified_And_Correctly_Stored_Types()
+        {
+
+            double orig_Px;
+
+            try
+            {
+                var result = _unitOfWork.Product.GetFirstOrDefault(u => u.Price < 110);
+                orig_Px = result.Price;//making a local copy
+
+                result.Price = .01 + result.Price;//modify for test purposes
+                _unitOfWork.Save();//save to in-mem db
+
+            }
+            catch (InvalidCastException e)
+            {
+                throw;
+            }
+
+            //new dbcontext instance to make sure our changes were saved successfully
+
+            var new_result = _unitOfWork.Product.GetFirstOrDefault(u => u.Price == .01 + orig_Px);//retrieve specific category from Db
+
+            if (new_result.Price == .01 + orig_Px)
+            {
+                new_result.Price = -.01 + orig_Px;
+                _unitOfWork.Save();
+            }
+
+            else
+            {
+                Assert.Fail();
+            }
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(new_result.Id, Is.GreaterThan(-1));//id==0 means new entry, so we allow for that since this may run on another machine without my local temp db config
+                Assert.That(new_result.Price, Is.Positive);
+                Assert.That(new_result.Price50, Is.TypeOf<double>());
+                Assert.That(new_result.Price100, Is.AtLeast(20));
+                Assert.That(new_result.Author, Is.TypeOf<string>());
+                Assert.That(new_result.ImageUrl, Is.Not.Null);
+                Assert.That(new_result.Category, Is.TypeOf<Category>());
+                Assert.That(new_result.ISBN, Is.Unique);
+
+            });
+        }
+
+
+
+
+
         [Test]
         public void HomeController_Returns_HomePage_Rendered()
         {
@@ -77,7 +179,7 @@ namespace BookstoreWebNUnitTest
             Assert.IsInstanceOf<ViewResult>(result);
         }
 
-        public void Virtual_HomeProduct_SQLDB_ExtractTest() //test ability to fetch products from virtual SQL db
+        public void Connection_ToASP_EFC_AndInMemDb() //test ability to fetch products from virtual SQL db
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "temp-MoviesDB").Options;

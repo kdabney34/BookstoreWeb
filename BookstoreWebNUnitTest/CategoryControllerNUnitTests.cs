@@ -14,110 +14,169 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookstoreWebNUnitTest
+namespace BookstoreWebNUnitTest;
+
+
+[TestFixture]
+public class CategoryControllerNUnitTests
 {
+    public CategoryController categoryController;
+    private readonly IUnitOfWork _unitOfWork;
+    private DbContextOptions<ApplicationDbContext> options;
+    private Mock<ITestCategoryRepo> CategoryRepository = new Mock<ITestCategoryRepo>();
 
-    [TestFixture]
-    public class CategoryControllerNUnitTests
+    public CategoryControllerNUnitTests(IUnitOfWork unitOfWork)
     {
-        public CategoryController categoryController;
-        private readonly IUnitOfWork _unitOfWork;
-        private DbContextOptions<ApplicationDbContext> options;
-        private Mock<ITestCategoryRepo> CategoryRepository = new Mock<ITestCategoryRepo>();
+        _unitOfWork = unitOfWork;
+    }
 
-        public CategoryControllerNUnitTests(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
-
-        [SetUp]
-        public void Setup()//configure virtual sql db for test
-        {
-            options = new DbContextOptionsBuilder<ApplicationDbContext>()
-               .UseInMemoryDatabase(databaseName: "temp_MoviesDB").Options;
-        }
-
-        public void Category_SQLDB_Table_Successfully_Supports_CRUD_Functionality()
-        {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()//using temporary DB instance because i don't want to modify existing company entities just for a test purpose
-                .UseInMemoryDatabase(databaseName: "temp-MoviesDB").Options;
-
-            using (var context = new ApplicationDbContext(options))
-            {
-                var repository = new CategoryRepository(context);
-                var result = repository.GetFirstOrDefault(u => u.Name == "Applied Materials, Inc.");//retrieve specific company from Db
-                result.State = "TEST";
-            }
-
-            //new dbcontext instance to make sure our changes were saved successfully
-            using (var context = new ApplicationDbContext(options))
-            {
-                var repository = new CompanyRepository(context);
-                var result = repository.GetFirstOrDefault(u => u.Name == "Applied Materials, Inc.");//retrieve specific company from Db
-                if (result.State == "TEST")
-                {
-                    result.State = "TX";
-                    Assert.Multiple(() =>
-                    {
-                        Assert.That(result.Id, Is.GreaterThan(-1));//id==0 means new entry, so we allow for that since this may run on another machine without my local temp db config
-                        Assert.That(result.City, Is.EqualTo("Austin"));
-                        Assert.That(result.PostalCode, Is.Positive);
-                        Assert.That(result.StreetAddress, Is.Unique);
-                        Assert.That(result.PhoneNumber, Is.TypeOf<string>());
-                        Assert.That(result.Name, Is.EqualTo("Applied Materials, Inc."));
-                    });
-                }
-            }
-
-        }
-        public void Virtual_Category_SQLDB_ExtractTest() //test ability to fetch covertypes from virtual SQL db
-        {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "temp-MoviesDB").Options;
-
-            using (var context = new ApplicationDbContext(options))//can always modify to another connection
-            {
-                var repository = new CategoryRepository(context);
-                var result = repository.GetFirstOrDefault(u => u.Name == "Hardcover");
-                Assert.That(result.Name, Is.EqualTo("Hardcover"));
-            };
-        }
+    [SetUp]
+    public void Setup()//configure virtual sql db for test
+    {
+        options = new DbContextOptionsBuilder<ApplicationDbContext>()
+           .UseInMemoryDatabase(databaseName: "temp_MoviesDB").Options;
+    }
 
 
 
+    [Test] //check that pages are getting returned rendered
+    public void CategoryController_Returns_Index_AsRenderedWithModel()
+    {
+        //arrange
+        IEnumerable<Category> categoryList;
 
-        [Test] //check that pages are getting returned rendered
-        public void CategoryController_Returns_Index_AsRenderedWithModel()
-        {
-            //arrange
-            IEnumerable<Category> categoryList;
+        //act
+        categoryList = _unitOfWork.Category.GetAll();
 
-            //act
-            categoryList = _unitOfWork.Category.GetAll();
-
-            //assert
-            var result = categoryController.Index();
-            Assert.IsInstanceOf<ViewResult>(result);
-        }
+        //assert
+        var result = categoryController.Index();
+        Assert.IsInstanceOf<ViewResult>(result);
+    }
 
 
-        [Test] //check if returning non-null tables
-        public void Actual_Fetched_CategoryListFromDb_Is_Not_Empty()
-        {
-            //arrange
-            IEnumerable<Category> categoryList;
+    [Test] //check if returning non-null tables
+    public void Actual_Fetched_CategoryListFromDb_Is_Not_Empty()
+    {
+        //arrange
+        IEnumerable<Category> categoryList;
 
-            //act
-            categoryList = _unitOfWork.Category.GetAll();
+        //act
+        categoryList = _unitOfWork.Category.GetAll();
 
-            //assert
-            Assert.That(categoryList, Is.Not.Empty);
-
-        }
-
+        //assert
+        Assert.That(categoryList, Is.Not.Empty);
 
     }
+
+    [Test]
+    public void Category_Table_ModifySuccessful()
+    {
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()//using temporary DB instance because i don't want to modify existing company entities just for a test purpose
+            .UseInMemoryDatabase(databaseName: "temp-MoviesDB").Options;
+        int orig_Id;
+
+        using (var context = new ApplicationDbContext(options))
+        {
+            var repository = new CategoryRepository(context);
+            var result = repository.GetFirstOrDefault(u => u.Name == "Romance");//retrieve specific category from Db
+            orig_Id = result.Id;
+            result.Name = "TEST";//modify for test purposes
+            context.SaveChanges();//save to in-mem db
+
+        }
+
+        //new dbcontext instance to make sure our changes were saved successfully
+        using (var context = new ApplicationDbContext(options))
+        {
+            var repository = new CategoryRepository(context);
+            var result = repository.GetFirstOrDefault(u => u.Name == "TEST");
+            if (result.Name == "TEST")
+            {
+                if (result.Id == orig_Id)
+                {
+                    result.Name = "Romance";
+
+                }
+                Assert.Multiple(() =>
+                {
+                    Assert.That(result.Id, Is.GreaterThan(-1));//id==0 means new entry, so we allow for that since this may run on another machine without my local temp db config
+                    Assert.That(result.Name, Is.TypeOf<string>());
+                    Assert.That(result.DisplayOrder, Is.TypeOf<int>());
+                    Assert.That(result.CreatedDateTime, Is.TypeOf<DateTime>());
+                });
+            }
+            else
+            {
+                Assert.Fail();
+            }
+        }
+
+    }
+
+
+    [Test]
+    public void Category_SQLServer_Table_Successfully_Accessed_And_Modified_And_Correctly_Stored_Types()
+    {
+
+        int orig_Id;
+
+        try
+        {
+            var result = _unitOfWork.Category.GetFirstOrDefault(u => u.Name == "Romance");//retrieve specific category from Db
+            result.Name = "Romance_";//modify for test purposes
+            orig_Id = result.Id;
+            _unitOfWork.Save();//save to in-mem db
+
+        }
+        catch (InvalidCastException e)
+        {
+            throw;
+        }
+
+        //new dbcontext instance to make sure our changes were saved successfully
+
+        var new_result = _unitOfWork.Category.GetFirstOrDefault(u => u.Name == "Romance");//retrieve specific category from Db
+
+        if (new_result.Name == "Romance_")
+        {
+            if (new_result.Id == orig_Id)
+            {
+                new_result.Name = "Romance";
+                _unitOfWork.Save();
+            }
+            Assert.Multiple(() =>
+            {
+                Assert.That(new_result.Id, Is.GreaterThan(-1));//id==0 means new entry, so we allow for that since this may run on another machine without my local temp db config
+                Assert.That(new_result.Name, Is.TypeOf<string>());
+                Assert.That(new_result.DisplayOrder, Is.TypeOf<int>());
+                Assert.That(new_result.CreatedDateTime, Is.TypeOf<DateTime>());
+            });
+        }
+        else
+        {
+            Assert.Fail();
+        }
+    }
+
+
+
+
+    [Test]
+    public void Connection_ToASP_EFC_AndInMemDb()//whether or not our config with Entity Framework Core, our database, and everything is correct
+    {
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()//
+            .UseInMemoryDatabase(databaseName: "temp-MoviesDB").Options;
+
+        using (var context = new ApplicationDbContext(options))
+        {
+            var repository = new CategoryRepository(context);
+            var result = repository.GetFirstOrDefault(u => u.Name == "Hardcover");
+            Assert.That(result.Name, Is.EqualTo("Hardcover")); //this all wont work without proper connection
+        };
+    }
+
 }
+
 
 
 

@@ -36,7 +36,7 @@ namespace BookstoreWebNUnitTest
 
 
         [Test]
-        public void Virtual_Order_SQLDB_ExtractTest() //test ability to fetch orders from virtual SQL db
+        public void Connection_ToASP_EFC_AndInMemDb() //test ability to fetch orders from virtual SQL db
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "temp-MoviesDB").Options;
@@ -83,9 +83,56 @@ namespace BookstoreWebNUnitTest
         } //setup virtual in-Mem Db instance for test purposes
 
 
+
+        [Test]
+        public void OrderDetailOrderHeaderCRUDSuccess_SQLServer_Table_Successfully_Accessed_And_Modified()
+        {
+            //arrange
+            var order = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == 1, tracked: false);//get 1st customers orderHeader from Db
+            var detail = _unitOfWork.OrderDetail.GetFirstOrDefault(u => u.Id == 1, tracked: false); //orderDetail GET
+
+            double orig_px;
+
+            order.TrackingNumber = SD.TestTrackingNum;
+            order.Carrier = SD.CarrierFedEx;
+            order.OrderStatus = SD.StatusShipped;
+            orig_px = detail.Price;
+            detail.Price += .01;
+
+            _unitOfWork.OrderHeader.Update(order);
+            _unitOfWork.OrderDetail.Update(detail);
+            _unitOfWork.Save();
+
+            //new dbcontext instance to make sure our changes were saved successfully
+            var new_order = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == 1, tracked: false);//retrieve specific category from Db
+            var new_detail = _unitOfWork.OrderDetail.GetFirstOrDefault(u => u.Id == 1, tracked: false);//retrieve specific category from Db
+
+            if(new_order.TrackingNumber == SD.TestTrackingNum)
+            {
+                if(new_detail.Price == orig_px+.01)
+                {
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(new_order.TrackingNumber, Is.EqualTo(SD.TestTrackingNum));//id==0 means new entry, so we allow for that since this may run on another machine without my local temp db config
+                        Assert.That(new_order.Carrier, Is.Not.Null);
+                        Assert.That(new_order.OrderStatus, Is.EquivalentTo(SD.StatusShipped));
+
+                        Assert.That(new_detail.Price, Is.TypeOf<int>());
+
+                    });
+                }
+            }
+            else
+            {
+                Assert.Fail();
+            }
+            
+        }
+
+
         //Test that In-Memory Database is successfully accepting CRUD functionality to the web app
         [Test]
-        public void InMemDb_Allowing_Successful_CRUD_Functionality() //test that we are able to modify things and store in db successfully
+        public void OrderControllerTable_ModifySuccessful() //test that we are able to modify things and store in db successfully
         {
             //arrange
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -120,6 +167,10 @@ namespace BookstoreWebNUnitTest
                             Assert.NotNull(order);
                         }
                     }
+                }
+                else
+                {
+                    Assert.Fail();
                 }
             }; //close the in-mem
         }

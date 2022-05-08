@@ -16,22 +16,22 @@ using System.Threading.Tasks;
 
 namespace BookstoreWebNUnitTest;
 
-    [TestFixture]
-    public class CoverTypeControllerNUnitTests
-    {
-        private CoverType CoverType_1;
-        private CoverType CoverType_2;
-        private HomeController homeController;
-        private IUnitOfWork _unitOfWork;
-        private Mock<ITestCoverTypeRepo> CoverTypeRepository = new Mock<ITestCoverTypeRepo>();
-        private List<CoverType> coverList;
-        private DbContextOptions<ApplicationDbContext> options;
-        private Mock<CoverTypeController> covertypeControllerMock;
+[TestFixture]
+public class CoverTypeControllerNUnitTests
+{
+    private CoverType CoverType_1;
+    private CoverType CoverType_2;
+    private HomeController homeController;
+    private IUnitOfWork _unitOfWork;
+    private Mock<ITestCoverTypeRepo> CoverTypeRepository = new Mock<ITestCoverTypeRepo>();
+    private List<CoverType> coverList;
+    private DbContextOptions<ApplicationDbContext> options;
+    private Mock<CoverTypeController> covertypeControllerMock;
 
-        public CoverTypeControllerNUnitTests(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-            coverList = new List<CoverType>
+    public CoverTypeControllerNUnitTests(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+        coverList = new List<CoverType>
             {
                         new CoverType {
                             Name = "Tony Simmons"
@@ -41,6 +41,95 @@ namespace BookstoreWebNUnitTest;
                          }
             };
     }//exit constructor
+
+
+
+
+
+    [Test]
+    public void CoverType_SQLServer_Table_Successfully_Accessed_And_Modified_And_Correctly_Stored_Types()
+    {
+
+        int orig_Id;
+
+        try
+        {
+            var result = _unitOfWork.CoverType.GetFirstOrDefault(u => u.Name == "Softcover");//these tests need the local in-mem db to run
+            result.Name = "Softcover_";//modify for test purposes
+            orig_Id = result.Id;//making a local copy
+            _unitOfWork.Save();//save to in-mem db
+
+        }
+        catch (InvalidCastException e)
+        {
+            throw;
+        }
+
+        //new dbcontext instance to make sure our changes were saved successfully
+
+        var new_result = _unitOfWork.CoverType.GetFirstOrDefault(u => u.Name == "Softcover_");//retrieve specific category from Db
+
+        if (new_result.Name == "Softcover_")
+        {
+            if (new_result.Id == orig_Id)
+            {
+                new_result.Name = "Softcover";
+                _unitOfWork.Save();
+            }
+            Assert.Multiple(() =>
+            {
+                Assert.That(new_result.Id, Is.GreaterThan(-1));//id==0 means new entry, so we allow for that since this may run on another machine without my local temp db config
+                Assert.That(new_result.Name, Is.TypeOf<string>());
+            });
+        }
+        else
+        {
+            Assert.Fail();
+        }
+    }
+
+
+
+
+    public void CoverType_Table_ModifySuccessful()
+    {
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()//using temporary DB instance because i don't want to modify existing company entities just for a test purpose
+            .UseInMemoryDatabase(databaseName: "temp-MoviesDB").Options;
+        int orig_Id;
+
+        using (var context = new ApplicationDbContext(options))//initialize using our newly configured options
+        {
+            var repository = new CoverTypeRepository(context);
+            var result = repository.GetFirstOrDefault(u => u.Name == "Hardcover");//retrieve specific category from Db
+            orig_Id = result.Id;
+            result.Name = "TEST";//modify for test purposes
+            context.SaveChanges();//save to in-mem db
+
+        }
+
+        //new dbcontext instance to make sure our changes were saved successfully
+        using (var context = new ApplicationDbContext(options))
+        {
+            var repository = new CoverTypeRepository(context);
+            var result = repository.GetFirstOrDefault(u => u.Name == "TEST");
+            if (result.Id == orig_Id)
+            {
+                result.Name = "Romance";
+
+            }
+            else
+            {
+                Assert.Fail();
+            }
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Id, Is.GreaterThan(-1));//id==0 means new entry, so we allow for that since this may run on another machine without my local temp db config
+                Assert.That(result.Name, Is.TypeOf<string>());
+            });
+
+        }
+
+    }
 
     [Test]
     public void Actual_Fetched_CoverTypeListFromDb_Is_Not_Empty()
@@ -72,13 +161,13 @@ namespace BookstoreWebNUnitTest;
 
 
     [SetUp]//configure virtual database for test
-    public void Setup() 
+    public void Setup()
     {
         options = new DbContextOptionsBuilder<ApplicationDbContext>()
            .UseInMemoryDatabase(databaseName: "temp-MoviesDB").Options;
     }
 
-    public void Virtual_CoverType_SQLDB_ExtractTest () //test ability to fetch covertypes from virtual SQL db
+    public void Connection_ToASP_EFC_AndInMemDb() //test ability to fetch covertypes from virtual SQL db
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: "temp-MoviesDB").Options;
@@ -91,4 +180,3 @@ namespace BookstoreWebNUnitTest;
         };
     }
 }
-    
