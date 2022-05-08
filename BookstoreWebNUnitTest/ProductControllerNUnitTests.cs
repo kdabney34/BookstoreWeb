@@ -20,14 +20,37 @@ namespace BookstoreWebNUnitTest
     [TestFixture]
     public class ProductControllerNUnitTests
     {
-        public ProductController productController;
+        public HomeController homeController;
         private readonly IUnitOfWork _unitOfWork;
         private DbContextOptions<ApplicationDbContext> options;
+        private ProductRepository productRepository;
 
         public ProductControllerNUnitTests(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }//exit ctor
+
+
+        [TestCase(0, 1)]
+        [TestCase(2, 3)]
+        [TestCase(4, 5)]
+        [Test] //test whether home controller is returning the correct models
+        public void HomeController_ModelStateValidityCheck_ReturnView(int id)
+        {
+            homeController.ModelState.AddModelError("test", "test");//string errorkey, string errormessage | adds additional error msg
+            if (id < 1)
+            {
+                var result = homeController.Details(id);
+
+                ViewResult viewResult = result as ViewResult;
+                Assert.IsInstanceOf<ShoppingCart>(viewResult.Model);
+            }
+            else
+            {
+                Assert.IsFalse(homeController.ModelState.IsValid);
+            }
+        }
+
 
         [Test]
         public void Actual_Fetched_ProductListFromDb_Is_Not_Empty()

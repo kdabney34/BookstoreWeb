@@ -174,6 +174,30 @@ namespace BookstoreWebNUnitTest
                 }
             }; //close the in-mem
         }
+
+
+        [TestCase(0, 1)]
+        [TestCase(2, 3)]
+        [TestCase(4, 5)]
+        [Test] //test whether home controller is returning the correct models
+        public void OrderController_ModelStateValidityCheck_ReturnView(int id)
+        {
+            categoryController.ModelState.AddModelError("test", "test");//string errorkey, string errormessage | adds additional error msg
+            if (id < 1)
+            {
+                var result = categoryController.Details(id);
+
+                ViewResult viewResult = result as ViewResult;
+                Assert.IsInstanceOf<ShoppingCart>(viewResult.Model);
+            }
+            else
+            {
+                Assert.IsFalse(categoryController.ModelState.IsValid);
+            }
+        }
+
+
+
     }
 }
 

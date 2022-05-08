@@ -27,6 +27,7 @@ public class CoverTypeControllerNUnitTests
     private List<CoverType> coverList;
     private DbContextOptions<ApplicationDbContext> options;
     private Mock<CoverTypeController> covertypeControllerMock;
+    private CoverTypeController coverTypeController;
 
     public CoverTypeControllerNUnitTests(IUnitOfWork unitOfWork)
     {
@@ -43,6 +44,25 @@ public class CoverTypeControllerNUnitTests
     }//exit constructor
 
 
+    [TestCase(0, 1)]
+    [TestCase(2, 3)]
+    [TestCase(4, 5)]
+    [Test] //test whether CoverType controller is returning the correct models
+    public void CoverTypeController_ModelStateValidityCheck_ReturnView(int id)
+    {
+        homeController.ModelState.AddModelError("test", "test");//string errorkey, string errormessage | adds error bound to original
+        if (id < 1)
+        {
+            var result = coverTypeController.Edit(id);
+
+            ViewResult viewResult = result as ViewResult;
+            Assert.IsInstanceOf<CoverType>(viewResult.Model);
+        }
+        else
+        {
+            Assert.IsFalse(homeController.ModelState.IsValid);//in prod i would make a MOQ of CTcontroller and use in homeController's place
+        }
+    }
 
 
 

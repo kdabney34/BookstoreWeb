@@ -175,6 +175,26 @@ public class CategoryControllerNUnitTests
         };
     }
 
+    [TestCase(0, 1)]
+    [TestCase(2, 3)]
+    [TestCase(4, 5)]
+    [Test] //test whether category controller is returning the correct models
+    public void CategoryController_ModelStateInvalid_ReturnView(int id)
+    {
+        categoryController.ModelState.AddModelError("test", "test");//string errorkey, string errormessage
+
+        if (id < 1) //if record exists for category in Db
+        {
+            Assert.IsFalse(categoryController.ModelState.IsValid);//check whether the ModelState is invalid which is EFC's way of disallowing CRUD d.t. validations
+        }
+        else
+        {
+            var result = categoryController.Edit(id);
+
+            ViewResult viewResult = result as ViewResult;
+            Assert.IsInstanceOf<Category>(viewResult.Model);
+        }
+    }
 }
 
 

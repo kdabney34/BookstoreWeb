@@ -88,6 +88,32 @@ namespace BookstoreWebNUnitTest
         }
 
 
+        [TestCase(0, 1)]
+        [TestCase(2, 3)]
+        [TestCase(4, 5)]
+        [Test] //test whether company controller is returning the correct models
+        public void CompanyController_ModelStateValidityCheck_ReturnView(int id)
+        {
+            companyController.ModelState.AddModelError("test", "test");//string errorkey, string errormessage
+            if (id < 1)
+            {
+                ShoppingCart cartObj = new()
+                {
+                    Count = 1,
+                    Product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == 1, includeProperties: "Category,CoverType"),
+                };
+
+                var result = companyController.Upsert(id);
+
+                ViewResult viewResult = result as ViewResult;
+                Assert.IsInstanceOf<Category>(viewResult.Model);
+            }
+            else
+            {
+                Assert.IsFalse(companyController.ModelState.IsValid);
+            }
+        }
+
 
 
         [Test] //check that pages are getting returned rendered
