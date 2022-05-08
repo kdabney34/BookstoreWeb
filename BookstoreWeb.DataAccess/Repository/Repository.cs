@@ -13,8 +13,8 @@ namespace BookstoreWeb.DataAccess.Repository
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDbContext _db;
-        internal DbSet<T> dbSet;
-
+        internal DbSet<T> dbSet;//since Repository demands a class 'T' be passed to it, it becomes understood that saying 'dbSet'
+                               //makes a dbSet of your particular class 'T' you passed to it.
         public Repository(ApplicationDbContext db)
         {
             _db = db;

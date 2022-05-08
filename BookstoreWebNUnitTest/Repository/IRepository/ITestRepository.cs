@@ -5,8 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookstoreWeb.DataAccess.Repository.IRepository
-{
+namespace BookstoreWebNUnitTest.Repository.IRepository;
     public interface ITestRepository<T> where T : class
 	{
 		//T - Category
@@ -19,4 +18,3 @@ namespace BookstoreWeb.DataAccess.Repository.IRepository
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entity);
     }
-}

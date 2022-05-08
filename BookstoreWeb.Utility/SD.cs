@@ -26,5 +26,9 @@ namespace BookstoreWeb.Utility
         public const string PaymentStatusRejected = "Rejected";
 
         public const string SessionCart = "SessionShoppingCart";
+
+        public const string CarrierFedEx = "FedEx";
+
+        public const string TestTrackingNum = "123456789asdf";
     }
 }

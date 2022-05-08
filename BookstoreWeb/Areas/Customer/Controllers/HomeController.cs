@@ -86,4 +86,10 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    //testing purposes to see if controller is accessible
+    public string TestMethod()
+    {
+        return "test";
+    }
 }
