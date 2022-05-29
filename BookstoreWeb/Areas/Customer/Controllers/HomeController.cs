@@ -28,12 +28,18 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties:"Category,CoverType");
-        ViewBag.isHome = true;
+       // ViewBag.isHome = true;
 
         return View(productList);
     }
 
-    public IActionResult About()
+    public IActionResult ShopIntro()
+    {
+
+        return View();
+    }
+
+    public IActionResult Gallery()
     {
         return View();
     }

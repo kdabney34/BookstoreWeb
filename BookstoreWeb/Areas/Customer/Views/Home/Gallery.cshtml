@@ -1,0 +1,188 @@
+﻿<link rel="stylesheet" href="~\sass\Number8.css" /><!--link to compiled css file using SASS-->
+ <style>
+     section {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+    section > * {
+        z-index: 9;
+        position: relative;
+        top: 0;
+    }
+
+    section > canvas {
+        z-index: 1;
+        position: absolute;
+        left: 0;
+    }
+
+ </style>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+
+</head>
+
+<body>
+        <script src="~/js/confetti.min.js.js" type="module"></script>
+
+<h1 class="mt-4" style="justify-content:center;text-align:center;">Our Works of Art</h1>
+    
+    <div class="container " style="display: flex;width: 100%;flex-wrap: wrap;justify-content: center;background: antiquewhite;">
+        <a href="/images/1.PNG" ><img id="img1" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/1.PNG" alt="" srcset="" /></a>
+       <a href="/images/2.PNG" > <img id="img2" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/2.PNG" alt="" srcset="" /></a>
+       <a href="/images/3.PNG" > <img id="img3" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/3.PNG" alt="" srcset="" /></a>
+        <a href="/images/4.PNG" ><img id="img4" class="gallery" onmouseover="" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/4.PNG" alt="" srcset=""/> </a>
+        <a href="/images/5.PNG" ><img id="img5" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/5.PNG" alt="" srcset=""/></a>
+        <a href="/images/6.PNG" ><img id="img6" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/6.PNG" alt="" srcset=""/></a>
+        <a href="/images/7.PNG" ><img id="img7" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/7.PNG" alt="" srcset=""/></a>
+       <a href="/images/8.PNG" > <img id="img8" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/8.PNG" alt="" srcset=""/></a>
+        <a href="/images/9.PNG" ><img id="img9" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/9.PNG" alt="" srcset=""/></a>
+ <a href="/images/10.PNG" ><img id="img10" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/10.PNG" alt="" srcset=""/></a>
+ <a href="/images/11.PNG" ><img id="img11" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/11.PNG" alt="" srcset=""/></a>
+ <a href="/images/12.PNG" ><img id="img12" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/12.PNG" alt="" srcset=""/></a>
+<a href="/images/13.PNG" > <img id="img13" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/13.PNG" alt="" srcset=""/></a>
+<a href="/images/14.PNG" > <img id="img14" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/14.PNG" alt="" srcset=""/></a>
+<a href="/images/15.PNG" > <img id="img15" class="gallery" style="width: 363px;
+    height: 270px;
+    object-fit: cover;
+    object-position: bottom;
+    padding: 35px;" src="/images/15.PNG" alt="" srcset=""/></a>
+
+    </div>
+
+
+
+
+
+
+    
+
+ <section class="example-2">
+      <div class="content l" style="padding:25% 0 0 5%;">
+        <h1 style="font-size: 3.2em;letter-spacing: -.02em;">Beautify Your Home</h1>
+        <p style="font-size: 1.3em;">Get in touch with a team member today</p>
+      </div>
+      <div class="content r" style="padding:28% 0 0 5%;">
+        <input type="text" style="font-size: 1.2em;height: 45px;vertical-align: top;" placeholder="e-mail" />
+        <input type="button" class="contactBtn" style="height: 45px;vertical-align: top;font-size: 1em;" value="contact" />
+      </div>
+      <canvas id="canvas3"></canvas>
+    </section>
+
+    <div class="spacing"></div>
+
+    <section class="example-1">
+      <div class="content" style="padding:25% 10%;">
+        <h1 style="font-size: 4em;text-transform: uppercase;letter-spacing: -.05em;">Try New experiences.</h1>
+        <p style="font-size: 1.6em;text-transform: uppercase;">You know, be creative and stuff.</p>
+      </div>
+      <canvas id="canvas1"></canvas>
+    </section>
+
+    <div class="spacing"></div>
+
+    
+    @section Scripts {
+    <!-- Importing generator -->
+    <script type="text/javascript" src="~/js/confetti.min.js.js"></script>
+    <!-- Starting site logic -->
+    <script type="text/javascript">
+
+      //First example
+      var canvas1Settings = {
+        target: 'canvas1',
+        max: 100,
+        props: ['square', 'triangle', 'line'],
+        colors: [[80,80,80]],
+        clock: 3
+      };
+      var canvas1 = new ConfettiGenerator(canvas1Settings);
+      canvas1.render();
+
+   
+      //Third example
+      var canvas3Settings = {
+        target: 'canvas3',
+        max: 30,
+        animate: true,
+        props: ['circle'],
+        colors: [[165,104,246],[230,61,135],[0,199,228],[253,214,126]],
+        clock: 25
+      };
+      var canvas3 = new ConfettiGenerator(canvas3Settings);
+      canvas3.render();
+      
+    </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+}
+
+
+</body>
+
+
+</html>
