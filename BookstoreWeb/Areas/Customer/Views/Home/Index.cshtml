@@ -1,6 +1,4 @@
-﻿@model IEnumerable<BookstoreWeb.Models.Product>
-<link rel="stylesheet" href="~\sass\Number8.css" /><!--link to compiled css file using SASS-->
-<style>
+﻿<style>
     section {
         width: 100vw;
         height: 100vh;
@@ -49,41 +47,19 @@
         </span>
     </h1>
 
-    
+    <section class="example-2">
+      <div class="content" style="padding:25% 0;text-align: center;">
+        <h1 style="font-size: 4em;text-transform: uppercase;letter-spacing: -.05em;">Welcome!</h1>
+        <p style="font-size: 1.5em;text-transform: uppercase;">Have a look around, maybe buy something! &#128522;</p>
+        <a type="button" asp-area="Customer" asp-controller="Home" asp-action="Gallery" class="lookbtn btn">Look Around</a>
+        <a type="button" class="BSbtn btn" asp-area="Customer" asp-controller="Home" asp-action="ShopIntro">Buy Something</a>
+
+      </div>
+      <canvas id="canvas2"></canvas>
+    </section>
+
  
     <!--   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>    -->
-
-                @*<a type="button" asp-area="Customer" asp-controller="Home" asp-action="Gallery" class="lookbtn btn">Look Around</a>
-                <a type="button" class="BSbtn btn" asp-area="Customer" asp-controller="Home" asp-action="ShopIntro">Buy Something</a>
-*@
-      
-
- <section class="example-2">
-      <div class="content l" style="padding:25% 0 0 5%;">
-        <h1 style="font-size: 3.2em;letter-spacing: -.02em;">Beautify Your Home</h1>
-        <p style="font-size: 1.3em;">Get in touch with a team member today</p>
-      </div>
-      <div class="content r" style="padding:28% 0 0 5%;">
-        <input type="text" style="font-size: 1.2em;height: 45px;vertical-align: top;" placeholder="e-mail" />
-        <input type="button" class="contactBtn" style="height: 45px;vertical-align: top;font-size: 1em;" value="contact" />
-      </div>
-      <canvas id="canvas3"></canvas>
-    </section>
-
-    <div class="spacing"></div>
-
-    <section class="example-1">
-      <div class="content" style="padding:25% 10%;">
-        <h1 style="font-size: 4em;text-transform: uppercase;letter-spacing: -.05em;">Try New experiences.</h1>
-        <p style="font-size: 1.6em;text-transform: uppercase;">You know, be creative and stuff.</p>
-      </div>
-      <canvas id="canvas1"></canvas>
-    </section>
-
-    <div class="spacing"></div>
-
-    
-    
 
     <div class="spacing"></div>
 
@@ -100,38 +76,6 @@
 
 
 
-    <div class="row pb-3">
-        @foreach (var product in Model)
-        {
-            <div class="col-lg-3 col-md-6">
-                <div class="row p-2">
-                    <div class="col-12 p-1" style="border:1px solid #008cba; border-radius: 5px;">
-                        <div class="card">
-                            <img src="@product.ImageUrl" class="card-img-top rounded" />
-
-                            <div class="card-body">
-                                <div class="pl-1">
-                                    <p class="card-title h5 text-primary">@product.Title</p>
-                                    <p class="card-title text-info">by <b>@product.Author</b></p>
-                                </div>
-                                <div class="pl-1">
-                                    <p>List Price: <strike><b>$@product.ListPrice.ToString("0.00")</b></strike></p>
-                                </div>
-                                <div class="pl-1">
-                                    <p>As low as: <b>$@product.Price100.ToString("0.00")</b></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <a asp-action="Details" class="btn btn-primary form-control" asp-route-productId="@product.Id">
-                                Details
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
 
 
@@ -174,28 +118,39 @@
     <script type="text/javascript">
 
       //First example
-      var canvas1Settings = {
-        target: 'canvas1',
-        max: 100,
-        props: ['square', 'triangle', 'line'],
-        colors: [[80,80,80]],
-        clock: 3
-      };
-      var canvas1 = new ConfettiGenerator(canvas1Settings);
-      canvas1.render();
+      //var canvas1Settings = {
+      //  target: 'canvas1',
+      //  max: 100,
+      //  props: ['square', 'triangle', 'line'],
+      //  colors: [[80,80,80]],
+      //  clock: 3
+      //};
+      //var canvas1 = new ConfettiGenerator(canvas1Settings);
+      //canvas1.render();
 
+      //Second example
+      var canvas2Settings = {
+        "target":"canvas2",
+        "max":"180",
+        "animate":true,
+        "props":["circle","square","triangle","line"],
+        "colors":[[165,104,246],[230,61,135],[0,199,228],[253,214,126]],
+        "clock":"25"
+      };
+      var canvas2 = new ConfettiGenerator(canvas2Settings);
+      canvas2.render();
    
       //Third example
-      var canvas3Settings = {
-        target: 'canvas3',
-        max: 30,
-        animate: true,
-        props: ['circle'],
-        colors: [[165,104,246],[230,61,135],[0,199,228],[253,214,126]],
-        clock: 25
-      };
-      var canvas3 = new ConfettiGenerator(canvas3Settings);
-      canvas3.render();
+      //var canvas3Settings = {
+      //  target: 'canvas3',
+      //  max: 30,
+      //  animate: true,
+      //  props: ['circle'],
+      //  colors: [[165,104,246],[230,61,135],[0,199,228],[253,214,126]],
+      //  clock: 25
+      //};
+      //var canvas3 = new ConfettiGenerator(canvas3Settings);
+      //canvas3.render();
       
     </script>
 

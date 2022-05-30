@@ -27,10 +27,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties:"Category,CoverType");
-       // ViewBag.isHome = true;
-
-        return View(productList);
+        return View();
     }
 
     public IActionResult ShopIntro()
@@ -39,11 +36,21 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult Shop()
+    {
+        IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CoverType");
+        return View(productList);
+    }
+
     public IActionResult Gallery()
     {
         return View();
     }
 
+    public IActionResult Trip()
+    {
+        return View();
+    }
     public IActionResult Details(int productId)
     {
         ShoppingCart cartObj = new()

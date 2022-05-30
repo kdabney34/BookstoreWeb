@@ -1,0 +1,40 @@
+﻿
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Company Trip!</title>
+    <link rel="stylesheet" type="text/css" href="../wwwroot/css/tripstyle.css"/>
+</head>
+
+<body>
+    <section>
+        <img src="../wwwroot/images/tripAssets/bg.jpg" id="bg" />
+        <img src="../wwwroot/images/tripAssets/moon.png" id="moon" />
+        <img src="../wwwroot/images/tripAssets/mountain.png" id="mountain" />
+        <img src="../wwwroot/images/tripAssets/road.png" id="road" />
+        <h2 id="text">Join Us!</h2>
+
+    </section>
+    @section Scripts {
+    <script type="text/javascript">
+        let bg = document.getElementById("bg");
+        let moon = document.getElementById("moon");
+        let mountain = document.getElementById("mountain");
+        let road = document.getElementById("road");
+        let text = document.getElementById("text");
+
+        window.addEventListener('scroll', function () {
+            var value = window.scrollY;
+
+            bg.style.top = value / 2 + 'px';
+            moon.style.left = -value / 2 + 'px';
+            mountain.style.top = -value * 0.15 + 'px';
+            road.style.top = value * 0.15 + 'px';
+            text.style.top = value * 1 + 'px';
+
+        })
+    </script>
+    }
+</body>
+</html>
