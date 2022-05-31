@@ -8,6 +8,9 @@ for details on configuring this project to bundle and minify static web assets. 
     text-transform:capitalize;
 
 }
+
+/*     background-image: linear-gradient(to bottom, rgb(190, 88, 30) 0%, rgb(128, 49, 0) 100%);
+ */
 .spBox {
     box-sizing: content-box;
     width: 100%;
