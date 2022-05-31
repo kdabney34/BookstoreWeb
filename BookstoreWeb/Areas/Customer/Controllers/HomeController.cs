@@ -29,7 +29,10 @@ public class HomeController : Controller
     {
         return View();
     }
-
+    public IActionResult PlaxTest()
+    {
+        return View();
+    }
     public IActionResult ShopIntro()
     {
 
