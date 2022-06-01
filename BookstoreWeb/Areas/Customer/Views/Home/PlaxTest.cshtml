@@ -1,48 +1,88 @@
-﻿
+﻿@*
 @{
-    ViewData["Title"] = "PlaxTest";
-}
+    Layout = "";
+}*@
 
-<!DOCTYPE html>
+<link rel="stylesheet" href="~/css/plaxstyle.css" /><!--link to compiled css file using SASS-->
+
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Join the Adventure</title>
-        <link rel="stylesheet" href="~/css/plaxstyle.css" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script src="~/js/parallax.min.js"></script>
-    </head>
-    <body>
-        <div class="container">
-            <p>sad;lkfjds;lkajfl;dsajfdslaflk;kdsajfkl;dsjk
-                lkdsa;fjlkdsajfk;ldsakjfldskjf;ldsajf
-                lkdsajflkdsajfk;ldsjflk;dsjfakl;dsjfdlk;sajf;l
-                ;lkdsajfkldsajflkdsjlfajdslkf;sja
-                lkfjds;lkajfl;dsajfdslaflk;kdsajfkl;dsjk
-                lkdsa;fjlkdsajfk;ldsakjfldskjf;ldsajf
-                lkdsajflkdsajfk;ldsjflk;dsjfakl;dsjfdlk;sajf;l
-                ;lkdsajfkldsajflkdsjlfajdslkf;sja
-                lkfjds;lkajfl;dsajfdslaflk;kdsajfkl;dsjk
-                lkdsa;fjlkdsajfk;ldsakjfldskjf;ldsajf
-                lkdsajflkdsajfk;ldsjflk;dsjfakl;dsjfdlk;sajf;l
-                ;lkdsajfkldsajflkdsjlfajdslkf;sja
-            </p>
-            <div class="parallax" data-z-index="1" data-parallax="scroll" data-image-src="~/images/10.PNG"></div>
+<body>
 
-                <p>sad;lkfjds;lkajfl;dsajfdslaflk;kdsajfkl;dsjk
-                lkdsa;fjlkdsajfk;ldsakjfldskjf;ldsajf
-                lkdsajflkdsajfk;ldsjflk;dsjfakl;dsjfdlk;sajf;l
-                ;lkdsajfkldsajflkdsjlfajdslkf;sja
-                lkfjds;lkajfl;dsajfdslaflk;kdsajfkl;dsjk
-                lkdsa;fjlkdsajfk;ldsakjfldskjf;ldsajf
-                lkdsajflkdsajfk;ldsjflk;dsjfakl;dsjfdlk;sajf;l
-                ;lkdsajfkldsajflkdsjlfajdslkf;sja
-                lkfjds;lkajfl;dsajfdslaflk;kdsajfkl;dsjk
-                lkdsa;fjlkdsajfk;ldsakjfldskjf;ldsajf
-                lkdsajflkdsajfk;ldsjflk;dsjfakl;dsjfdlk;sajf;l
-                ;lkdsajfkldsajflkdsjlfajdslkf;sja
-            </p>
-            </div>
+    <div class="animeBox">
+        <h1>hello mh dsalk</h1>
 
-    </body>
+        <div class="stagger-visualizer">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            const staggerVisualizerEl = document.querySelector('.stagger-visualizer');
+            const fragment = document.createDocumentFragment();
+            const grid = [17, 17];
+            const col = grid[0];
+            const row = grid[1];
+            const numberOfElements = col * row;
+
+            for (let i = 0; i < numberOfElements; i++) {
+                fragment.appendChild(document.createElement('div'));
+            }
+
+            staggerVisualizerEl.appendChild(fragment);
+
+            const staggersAnimation = anime.timeline({
+                targets: '.stagger-visualizer div',
+                easing: 'easeInOutSine',
+                delay: anime.stagger(50),
+                loop: true,
+                autoplay: false
+            })
+                .add({
+                    translateX: [
+                        { value: anime.stagger('-.1rem', { grid: grid, from: 'center', axis: 'x' }) },
+                        { value: anime.stagger('.1rem', { grid: grid, from: 'center', axis: 'x' }) }
+                    ],
+                    translateY: [
+                        { value: anime.stagger('-.1rem', { grid: grid, from: 'center', axis: 'y' }) },
+                        { value: anime.stagger('.1rem', { grid: grid, from: 'center', axis: 'y' }) }
+                    ],
+                    duration: 1000,
+                    scale: .5,
+                    delay: anime.stagger(100, { grid: grid, from: 'center' })
+                })
+                .add({
+                    translateX: () => anime.random(-10, 10),
+                    translateY: () => anime.random(-10, 10),
+                    delay: anime.stagger(8, { from: 'last' })
+                })
+                .add({
+                    translateX: anime.stagger('.25rem', { grid: grid, from: 'center', axis: 'x' }),
+                    translateY: anime.stagger('.25rem', { grid: grid, from: 'center', axis: 'y' }),
+                    rotate: 0,
+                    scaleX: 2.5,
+                    scaleY: .25,
+                    delay: anime.stagger(4, { from: 'center' })
+                })
+                .add({
+                    rotate: anime.stagger([90, 0], { grid: grid, from: 'center' }),
+                    delay: anime.stagger(50, { grid: grid, from: 'center' })
+                })
+                .add({
+                    translateX: 0,
+                    translateY: 0,
+                    scale: .5,
+                    scaleX: 1,
+                    rotate: 180,
+                    duration: 1000,
+                    delay: anime.stagger(100, { grid: grid, from: 'center' })
+                })
+                .add({
+                    scaleY: 1,
+                    scale: 1,
+                    delay: anime.stagger(20, { grid: grid, from: 'center' })
+                })
+
+            staggersAnimation.play();
+        </script>
+        </div>
+    </div>
+    <h1>sdlk;jafds</h1>
+</body>
 </html>

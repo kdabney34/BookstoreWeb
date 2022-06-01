@@ -241,13 +241,14 @@ p {
 /** end about section **/
 
 /*****************************************************begin quote container********************************************************8*/
-.body-ex{
-    min-height:60vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding-bottom:70px;
-    background:#d67e21;
+.body-ex {
+    min-height: 36vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    background-image: linear-gradient(to bottom, rgb(190, 88, 30) 0%, rgb(128, 49, 0) 100%);
 }
 
 .qcontainer {
