@@ -7,11 +7,62 @@
 
 <html>
 <body>
+    <wrapper>
+        <row1Wrap class="row">
 
-    <div class="animeBox">
-        <h1>hello mh dsalk</h1>
 
-        <div class="stagger-visualizer">
+
+            <col1wrap class="col-4 ">
+                <h1 class="mt-5 mb-3">About This Site</h1>
+                <br />
+
+
+                <div class="stagger-visualizer "> </div>
+
+            </col1wrap>
+
+
+            <col2wrap class="col-8">
+                <h1 class="mt-5">What Exactly Goes on in Here?</h1>
+                <br />
+                <h3 style="font-size:small;color:red; background-color:yellow;">
+                    Note: Due to the complex animations, using a desktop computer is Highly Recommended for this site. This one is not a mobile-first app, made intentionally
+                    to showcase some of the cool animations that can't load on mobile devices.
+                </h3>
+                <br /><br />
+               @* <p style="color:black;font-weight:700;">
+                    <mark>
+                        This site was built using .NET 6 MVC framework and is fully equipped to process payments through Stripe, store all new user information
+                        within MS SQL-Server database that is hosted in the cloud through Azure. So we maintain records of everything automatically.
+              </mark>  </p>*@
+
+               <p style="color:black;font-weight:900;"><mark>Making of This Site</mark></p>
+                <ul>
+                  <li style="color:black;font-weight:700;"> <mark> .NET MVC FRAMEWORK C#, Javascript, HTML, CSS, SASS, </mark></li> 
+                   <li style="color:black;font-weight:700;"><mark>MSFT SQL-Server Hosted in Azure Cloud </mark></li> 
+                   <li style="color:black;font-weight:700;"><mark>JQuery Client side validations, Entity Framework Core server-side validations</mark></li> 
+                    <li style="color:black;font-weight:700;"><mark>Months of Azure Cloud Service troubleshooting in order to get this site published and deployed </mark></li> 
+                    <li style="color:black;font-weight:700;"> <mark> Depending on Type of User you register as, this site changes. i.e.- Admins can change everything 
+                        about the data collected on this site, and update order records as he/she processes the order physically, and finally ships the order</mark></li> 
+                        <li style="color:black;font-weight:700;"> <mark> Another example, Users registered in this site under a specific Company will have the 
+                            ability to skip immediate payment, and then come back later and pay within 30 days by credit card.</mark></li>
+                        <li style="color:black;font-weight:700;"> <mark> Finally, the majority of the users will be registed as plain Customer, will have a normal 
+                            E-commerce experience, having no permissions to edit anything or opt for delayed payment.
+                        </mark></li>
+                </ul>                  
+
+            </col2wrap>
+
+
+
+
+        </row1Wrap>
+    </wrapper>
+
+
+
+
+    @section Scripts {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
             const staggerVisualizerEl = document.querySelector('.stagger-visualizer');
@@ -81,8 +132,18 @@
 
             staggersAnimation.play();
         </script>
-        </div>
-    </div>
-    <h1>sdlk;jafds</h1>
-</body>
-</html>
+    }
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+
+    </body>
+    </html>

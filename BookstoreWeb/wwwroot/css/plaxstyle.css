@@ -9,11 +9,27 @@ html {
     align-items: center;
     width: 100%;
     height: 100vh;
-    background-color: #FF4B4B;
+/*    background-color: #FF4B4B;
+*/}
+
+col2wrap {
+    background-color:purple;
 }
 
+col1wrap {
+        background-color: #FF4B4B;
+}
+/*col1wrapInside.col-4 {
+    padding-left:1em;
+}
+col1wrapInside {
+    padding-left: 1em;
+}
 
-div.stagger-visualizer {
+.col1wrapInside {
+    padding-left: 1em;
+}*/
+    div .stagger-visualizer {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
